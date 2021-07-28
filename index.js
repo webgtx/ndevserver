@@ -2,7 +2,18 @@ const http = require('http');
 const fs = require('fs');
 const path = require('path');
 const { runInNewContext } = require('vm');
+const yargs = require('yargs');
 
+const argv = yargs
+    .option('port', {
+        year: {
+            description: 'the port to listen to (4444 by default)',
+            type: 'number',
+        }
+    })
+    .help()
+    .alias('help', 'h')
+    .argv;
 
 const server = http.createServer((req, res) => {
     // if (req.url === '/') {
@@ -72,6 +83,7 @@ const server = http.createServer((req, res) => {
     })
 })
 
-server.listen(4444, () => {
-    console.log('Server has been started...');
+const port = argv.port || 4444;
+server.listen(port, () => {
+    console.log(`Server has been started on port ${port} ...`);
 })
