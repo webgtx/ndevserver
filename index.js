@@ -83,7 +83,7 @@ const server = http.createServer((req, res) => {
     })
 })
 
-const port = argv.port ?? 4444;
+const port = argv.port || 4444;
 server.listen(port, () => {
     console.log(`Server has been started on port ${port} ...`);
 })
