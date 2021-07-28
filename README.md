@@ -4,7 +4,7 @@
 
 ```bash
 npm i
-npm run dev
+npm run dev [-- --port 8080]
 ```
 
 ## If you wanna upload your files...
