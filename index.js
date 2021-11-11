@@ -1,48 +1,14 @@
-const http = require('http');
-const fs = require('fs');
-const path = require('path');
-const { runInNewContext } = require('vm');
-const yargs = require('yargs');
-
-const argv = yargs
-    .option('port', {
-        year: {
-            description: 'the port to listen to (4444 by default)',
-            type: 'number',
-        }
-    })
-    .help()
-    .alias('help', 'h')
-    .argv;
+const http = require('http'),
+        fs = require('fs'),
+        path = require('path');
 
 const server = http.createServer((req, res) => {
-    // if (req.url === '/') {
-    //     fs.readFile(path.join(__dirname, 'public', 'index.html'), (err, data) => {
-    //         if (err) {
-    //             throw err;
-    //         }
-    //         res.writeHead(200, {
-    //             'Content-Type': 'text/html'
-    //         })
-    //         res.end(data);
-    //     })
-    // }
-    // if (req.url === '/contact') {
-    //     fs.readFile(path.join(__dirname, 'public', 'contact.html'), (err, data) => {
-    //         if (err) {
-    //             throw err;
-    //         }
-    //         res.writeHead(200, {
-    //             'Content-Type': 'text/html'
-    //         })
-    //         res.end(data);
-    //     })
-    // }
-    filePath = path.join(__dirname, 'public', req.url === '/' ? 'index.html' : req.url);
-
-    const ext = path.extname(filePath);
     let contentType
+    let filePath = path.join(__dirname, 'public', req.url === '/' ? 'index.html' : req.url);
+    const ext = path.extname(filePath);
 
+    // Mime types
+    !ext ? filePath += '.html' : null
     switch (ext) {
         case '.css':
             contentType = 'text/css'
@@ -50,15 +16,17 @@ const server = http.createServer((req, res) => {
         case '.js':
             contentType = 'text/javascript'
             break;
+        case '.png':
+            contentType = 'image/png'
+            break;
+        case '.jpg':
+            contentType = 'image/jpg'
         default:
             contentType = 'text/html'
             break;
     }
 
-    if (!ext) {
-        filePath += '.html'
-    }
-
+    // Static logic
     fs.readFile(filePath, (err, content) => {
         if (err) {
             fs.readFile(path.join(__dirname, 'public', 'error.html'), (err, data) => {
@@ -83,7 +51,7 @@ const server = http.createServer((req, res) => {
     })
 })
 
-const port = argv.port || 4444;
+const port = process.argv[2] || 4040;
 server.listen(port, () => {
     console.log(`Server has been started on port ${port} ...`);
 })
